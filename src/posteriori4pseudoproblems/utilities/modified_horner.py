@@ -17,24 +17,18 @@ def use_modified_horner(
         --------------------------------------------------------------------------------
         ...    |    c_j    |        c_{j-1}        |  ...  |          c_{j-k}
         
-    where a_l = v[t_l,...,t_j], l=j-k,...,j. 
-        
-    Parameters
-    ----------
-    alpha_values: ndarray 
-        Values, where p shall be evaluated at.
-    
-    t_values: ndarray 
-        Interpolation points t_{j-k},...,t_j, where t_{j-k} has to be at index 0.
-    
-    divided_diff: ndarray 
-        The divided differences v[t_j], v[t_{j-1}, t_j], ..., v[t_{j-k},...,t_j], where v[t_j] has to be stored at index 0. 
-        Axis 0 must be associated with t_l, l=j-k,...,j. 
-    
-    Returns
-    -------
-    :ndarray 
-        p evaluated at alpha_values.
+    where a_l = v[t_l,...,t_j], l=j-k,...,j.
+
+    Args:
+        alpha_values (ndarray): Values, where p shall be evaluated at.
+        t_values (ndarray): Interpolation points t_{j-k},...,t_j, where t_{j-k} has to be
+            at index 0.
+        divided_diff (ndarray): The divided differences v[t_j], v[t_{j-1}, t_j], ...,
+            v[t_{j-k},...,t_j], where v[t_j] has to be stored at index 0. Axis 0 must be
+            associated with t_l, l=j-k,...,j.
+
+    Returns:
+        ndarray: p evaluated at alpha_values.
     """
 
     divided_diff_local = np.copy(divided_diff[::-1])

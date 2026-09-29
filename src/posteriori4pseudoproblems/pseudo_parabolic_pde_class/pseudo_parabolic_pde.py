@@ -5,6 +5,17 @@ from ._generic_constants import compute_generic_constants as _compute_generic_co
 
 class PseudoParabolicPDE:
 
+    r""" A pseudo-parabolic PDE
+
+        L u_t + M u = F    with Lu = -\Delta u + au, a > 0, and Mu = -\Delta u + cu,
+
+    on \Omega x (0,T]. Bundles the problem data -- the source function, the
+    initial and boundary conditions, the functions a and c, the final time
+    and the spatial domain -- together with the generic constants needed by
+    the a posteriori error estimator, which are computed via
+    `compute_generic_constants`.
+    """
+
     def __init__(self,
                  F: Callable[[ndarray], ndarray],
                  u0: Callable[[ndarray], ndarray],

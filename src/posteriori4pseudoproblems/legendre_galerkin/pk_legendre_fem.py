@@ -27,8 +27,14 @@ class PkLegendreFEM():
     def evaluate_reference_function_for_quadrature(self,
                                                    quadrature: Quadrature) -> None:
 
-        r""" Evaluates refrence functions at quadarature points of the 
-        employed quadrature rule. """
+        r""" Evaluates the reference functions \psi_L, \psi_R, the integrated
+        Legendre polynomials N_1,...,N_{k-1} and the Legendre polynomials
+        P_1,...,P_{k-1} at the quadrature nodes of the employed quadrature
+        rule; they are returned by `evaluated_reference_functions`.
+
+        Args:
+            quadrature (Quadrature): Quadrature rule; provides the nodes.
+        """
 
         q_nodes, _ = quadrature.nodes_and_weights
         self._psi_l_v = psi_l(q_nodes)

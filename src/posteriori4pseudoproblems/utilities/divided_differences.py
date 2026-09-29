@@ -11,25 +11,20 @@ def compute_divided_differences(
 
     v[t_j] = v^j.
 
-    Since we are only need Newton interpolation -- and not the extended Hermite interpolation --
-    we don't need to consider possible deriviatives interpolation, like
+    Since we only need Newton interpolation -- and not the extended Hermite interpolation --
+    we don't need to consider possible interpolation of derivatives, like
 
         p'(t_j) = v'(t_j).
 
-    Parameters
-    ----------
-    t_values: ndarray 
-        The values t_{j-k},...,t_j (in this order). In particular, t_{j-k} is stored at index 0.
-    
-    v_values: ndarray 
-        The function v, evaluated at t_{j-k},...,t_j (in this order). Axis 0 must be associated with t_l, l=j-k,...,j.
+    Args:
+        t_values (np.ndarray): The values t_{j-k},...,t_j (in this order). In particular,
+            t_{j-k} is stored at index 0.
+        v_values (np.ndarray): The function v, evaluated at t_{j-k},...,t_j (in this order).
+            Axis 0 must be associated with t_l, l=j-k,...,j.
 
-    Returns
-    -------
-    :ndarray 
-        The divided differences v[t_j], v[t_{j-1}, t_j],..., v[t_{j-k},...,t_j] (in this order). In particular, v[t_j] is stored 
-        at index 0.                
-    
+    Returns:
+        np.ndarray: The divided differences v[t_j], v[t_{j-1}, t_j],..., v[t_{j-k},...,t_j]
+            (in this order). In particular, v[t_j] is stored at index 0.
     """
 
     t_local = np.copy(t_values[::-1])

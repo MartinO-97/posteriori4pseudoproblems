@@ -15,10 +15,10 @@ def interval_transformation(z : ndarray,
     multi-interval mappings (for example, in finite element meshes).
 
     Args:
-    z (ndarray): Array of points within `int_start` to be mapped.
-    int_start (tuple[float, float] | ndarray): Interval where 'z' lies.
-    int_end: (list[tuple[float, float]] | tuple[float, float] | ndarray): Target interval(s):
-            - Shape (2,) for a single interval 
+        z (ndarray): Array of points within `int_start` to be mapped.
+        int_start (tuple[float, float] | ndarray): Interval where `z` lies.
+        int_end (list[tuple[float, float]] | tuple[float, float] | ndarray): Target interval(s):
+            - Shape (2,) for a single interval
             - Shape (m, 2) for multiple intervals [[a1, b1], [a2, b2], ...].
 
     Returns:
@@ -29,7 +29,7 @@ def interval_transformation(z : ndarray,
         >>> z = np.array([-1, 0, 1])
         >>> int_start = (-1,1)
         >>> int_end = (2, 4)
-        >>> interval_mapp(z, int_start, int_end)
+        >>> interval_transformation(z, int_start, int_end)
         array([2., 3., 4.])
     """
 

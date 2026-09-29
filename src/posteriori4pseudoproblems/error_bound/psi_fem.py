@@ -19,7 +19,23 @@ def _assemble_load_vector(pde: PseudoParabolicPDE,
 
     r""" The FEM load vector (f(t), \phi_i)_h, i.e. the discrete L^2 inner
     product of the source term f(t) with every interior basis function
-    \phi_i of V^0_h. """
+    \phi_i of V^0_h.
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the
+            source term F.
+        spatial (SpatialDiscParameters): Spatial discretization parameters;
+            provides N, k, Delta and h.
+        quadrature (Quadrature): Quadrature rule; provides the nodes and
+            weights used for numerical integration.
+        ref_functions (PkLegendreFEM): Shape functions \psi_L, \psi_R and
+            integrated Legendre polynomials, evaluated at the quadrature
+            nodes.
+        t (float): The time t, at which f is evaluated.
+
+    Returns:
+        ndarray: The load vector, of length (r+1)*N-1 with r = k-1.
+    """
 
     N = spatial.N
     k = spatial.k

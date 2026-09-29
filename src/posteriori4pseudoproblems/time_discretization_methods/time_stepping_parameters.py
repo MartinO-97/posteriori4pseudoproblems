@@ -58,6 +58,10 @@ class TimeSteppingParameters(ABC):
         Args:
             alpha (float): Coefficient multiplying `matrix_L` in the
                 coefficient matrix.
+
+        Returns:
+            SuperLU | ndarray: The LU factorization of the coefficient matrix
+                (FEM) or the coefficient matrix itself (spectral).
         """
 
         ...

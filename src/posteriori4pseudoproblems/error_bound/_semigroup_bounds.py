@@ -56,7 +56,17 @@ def _sigma_j(pde: PseudoParabolicPDE,
              t_j: float,
              t_jm1: float) -> float:
 
-    r""" The value \sigma_j = max{\eta_{S,1}(T-t_j), \eta_{S,1}(T-t_{j-1})}. """
+    r""" The value \sigma_j = max{\eta_{S,1}(T-t_j), \eta_{S,1}(T-t_{j-1})}.
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the
+            final time T and the generic constants C_a, c_a and c_c.
+        t_j (float): The time t_j.
+        t_jm1 (float): The time t_{j-1}.
+
+    Returns:
+        float: The value \sigma_j.
+    """
 
     T = pde.final_time
 
@@ -67,7 +77,17 @@ def _mu_j(pde: PseudoParabolicPDE,
           t_j: float,
           t_jm1: float) -> float:
 
-    r""" The value \mu_j = max{\eta_{S_*,2}(T-t_j), \eta_{S_*,2}(T-t_{j-1})}. """
+    r""" The value \mu_j = max{\eta_{S_*,2}(T-t_j), \eta_{S_*,2}(T-t_{j-1})}.
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the
+            final time T and the generic constants M_{2,*} and \omega_{2,*}.
+        t_j (float): The time t_j.
+        t_jm1 (float): The time t_{j-1}.
+
+    Returns:
+        float: The value \mu_j.
+    """
 
     T = pde.final_time
 

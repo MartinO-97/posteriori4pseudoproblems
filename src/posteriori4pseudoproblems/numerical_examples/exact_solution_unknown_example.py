@@ -57,20 +57,58 @@ K_VALUES = {"l2": 1, "h1": 2}
 
 
 def source(xt_points: np.ndarray) -> np.ndarray:
+    r""" The source function F(x,t) = e^{2t} + \cos(\pi(x+t)^2).
+
+    Args:
+        xt_points (np.ndarray): Points in the space-time domain, a
+            two-dimensional array whose first column is associated with x
+            and whose last column is associated with t.
+
+    Returns:
+        np.ndarray: F evaluated at `xt_points`.
+    """
+
     x = xt_points[:, 0]
     t = xt_points[:, -1]
     return np.exp(2*t) + np.cos(np.pi*(x+t)**2)
 
 
 def initial_condition(x: np.ndarray) -> np.ndarray:
+    r""" The initial condition u_0(x) = \sin(\pi x).
+
+    Args:
+        x (np.ndarray): Points in the spatial domain.
+
+    Returns:
+        np.ndarray: u_0 evaluated at `x`.
+    """
+
     return np.sin(np.pi*x)
 
 
 def derivative_initial_condition(x: np.ndarray) -> np.ndarray:
+    r""" The derivative u'_0(x) = \pi \cos(\pi x) of the initial condition.
+
+    Args:
+        x (np.ndarray): Points in the spatial domain.
+
+    Returns:
+        np.ndarray: u'_0 evaluated at `x`.
+    """
+
     return np.pi*np.cos(np.pi*x)
 
 
 def build_pde() -> PseudoParabolicPDE:
+    r""" Builds the pseudo-parabolic PDE of the example and computes its
+    generic constants.
+
+    Returns:
+        PseudoParabolicPDE: The PDE with a(x) = 5x+6, c(x) = -e^{-x}, the
+            source function `source`, the initial condition
+            `initial_condition` and homogeneous Dirichlet boundary conditions.
+    """
+
     pde = PseudoParabolicPDE(
         F=source,
         u0=initial_condition,
@@ -87,6 +125,19 @@ def build_pde() -> PseudoParabolicPDE:
 
 
 def _build_spectral_setup(dim_V: int) -> tuple[SpatialDiscParameters, GaussLobatto, SpectralLegendre]:
+    r""" Builds the data of the spectral Galerkin method used for the
+    reference solution.
+
+    Args:
+        dim_V (int): Dimension of the ansatz space.
+
+    Returns:
+        tuple[SpatialDiscParameters, GaussLobatto, SpectralLegendre]: The
+            spatial discretization parameters, the Gauss-Lobatto quadrature
+            rule with N_QUAD_SPECTRAL nodes and the reference functions,
+            evaluated at its nodes.
+    """
+
     quadrature = GaussLobatto(N_QUAD_SPECTRAL)
     ref_functions = SpectralLegendre(dim_V=dim_V, spatial_interval=SPATIAL_INTERVAL)
     ref_functions.evaluate_reference_function_for_quadrature(quadrature)
@@ -96,6 +147,21 @@ def _build_spectral_setup(dim_V: int) -> tuple[SpatialDiscParameters, GaussLobat
 
 
 def _build_fem_setup(k: int, N: int, quadrature: GaussLobatto) -> tuple[SpatialDiscParameters, PkLegendreFEM]:
+    r""" Builds the data of a P_k-FEM on an equidistant mesh of the spatial
+    domain.
+
+    Args:
+        k (int): Polynomial degree of the P_k-FEM.
+        N (int): Number of spatial subintervals.
+        quadrature (GaussLobatto): Quadrature rule, at whose nodes the
+            reference functions are evaluated.
+
+    Returns:
+        tuple[SpatialDiscParameters, PkLegendreFEM]: The spatial
+            discretization parameters and the reference functions of the
+            P_k-FEM, evaluated at the quadrature nodes.
+    """
+
     a, b = SPATIAL_INTERVAL
     Delta = np.linspace(a, b, N + 1)
     h = np.diff(Delta)
@@ -114,8 +180,27 @@ def _initial_value(pde: PseudoParabolicPDE,
                    ref_functions: PkLegendreFEM,
                    mass: csr_array,
                    matrix_L: csr_array) -> np.ndarray:
-    r""" u^0_h: the Galerkin projection of u_0 with respect to L for the
-    L^2 estimator, the L^2 projection of u_0 for the H^1 estimator. """
+    r""" The initial approximation u^0_h: the Galerkin projection of u_0
+    with respect to L for the L^2 estimator, the L^2 projection of u_0 for
+    the H^1 estimator.
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing u_0 and
+            the function a.
+        norm_used (str): The norm of the estimator: "l2" or "h1".
+        spatial_disc_data (SpatialDiscParameters): Spatial discretization
+            parameters of the P_k-FEM.
+        quadrature (GaussLobatto): Quadrature rule; provides the nodes and
+            weights used for numerical integration.
+        ref_functions (PkLegendreFEM): Reference functions of the P_k-FEM,
+            evaluated at the quadrature nodes.
+        mass (csr_array): Mass matrix of the P_k-FEM.
+        matrix_L (csr_array): Matrix subjected to the operator L of the
+            P_k-FEM.
+
+    Returns:
+        np.ndarray: Coefficients of u^0_h.
+    """
 
     if norm_used == "l2":
         return elliptic_projection_fem(initial_condition, derivative_initial_condition, pde, spatial_disc_data,
@@ -130,8 +215,27 @@ def _backward_euler_value(pde: PseudoParabolicPDE,
                           quadrature: GaussLobatto,
                           ref_functions: PkLegendreFEM,
                           stepping_params: FemTimeSteppingParameters) -> np.ndarray:
-    r""" u^1_h (or v^1_h), obtained from u^0_h (v^0_h) by a single backward
-    Euler step, i.e. the BDF-1 method, on [t_0, t_1]. """
+    r""" The starting value u^1_h (or v^1_h), obtained from u^0_h (v^0_h)
+    by a single backward Euler step, i.e. the BDF-1 method, on [t_0, t_1].
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the
+            source term F.
+        spatial_disc_data (SpatialDiscParameters): Spatial discretization
+            parameters of the P_k-FEM.
+        temporal_disc_data (TemporalDiscParameters): Temporal discretization
+            parameters, providing the temporal mesh t_0,...,t_M.
+        quadrature (GaussLobatto): Quadrature rule; provides the nodes and
+            weights used for numerical integration.
+        ref_functions (PkLegendreFEM): Reference functions of the P_k-FEM,
+            evaluated at the quadrature nodes.
+        stepping_params (FemTimeSteppingParameters): State of the BDF-2
+            time-stepping scheme; provides the matrices L and M and, as its
+            latest approximation, u^0_h (v^0_h). It is not modified.
+
+    Returns:
+        np.ndarray: Coefficients of u^1_h (v^1_h).
+    """
 
     assert stepping_params.prev_solutions is not None
     euler_params = FemTimeSteppingParameters(disc_type="backward_euler", num_prev=1,
@@ -147,7 +251,22 @@ def run_bdf2_fem(pde: PseudoParabolicPDE, norm_used: str, M: int, coeffs_ref: np
     higher-order approximation v_h) on a mesh with N=M spatial subintervals,
     updates `evaluation`'s estimator components along the way, and returns
     the error of u^M_h against the reference solution at T_FINAL in the
-    norm `norm_used`. """
+    norm `norm_used`.
+
+    Args:
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE of the example.
+        norm_used (str): The norm of the error and the estimator: "l2" or
+            "h1"; determines k via K_VALUES.
+        M (int): Number of temporal subintervals, which equals the number
+            of spatial subintervals N.
+        coeffs_ref (np.ndarray): Spectral coefficients of the reference
+            solution at T_FINAL.
+        evaluation (ErrorBoundEvaluationFEM): Evaluation of the estimator,
+            whose components are updated in place.
+
+    Returns:
+        float: The error ||u(T) - u^M_h|| in the norm `norm_used`.
+    """
 
     k = K_VALUES[norm_used]
     quadrature = GaussLobatto(N_QUAD_FEM)
@@ -210,6 +329,9 @@ def run_bdf2_fem(pde: PseudoParabolicPDE, norm_used: str, M: int, coeffs_ref: np
 
 
 def main() -> None:
+    r""" Runs the example for the L^2 and the H^1 estimator and writes the
+    results as LaTeX tables to RESULTS_PATH. """
+
     pde = build_pde()
 
     print(f"Computing reference solution (spectral dG(2), dim_V={DIM_V})...")

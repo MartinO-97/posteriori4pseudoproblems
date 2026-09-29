@@ -79,6 +79,8 @@ class ErrorBoundEvaluationFEM:
 
     def __post_init__(self) -> None:
 
+        r""" Validates `norm_used`. """
+
         if self.norm_used not in _NORMS:
             raise ValueError(f'norm_used must be "l2" or "h1", got {self.norm_used!r}.')
 

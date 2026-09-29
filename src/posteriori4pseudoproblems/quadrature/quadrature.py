@@ -6,16 +6,25 @@ from numpy import ndarray
 
 class Quadrature(ABC):
 
-    def __init__(self, 
+    r""" Abstract base class of a quadrature rule on the reference interval
+    [-1,1], i.e. an approximation
+
+        \int_{-1}^1 f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    with nodes x_1,...,x_n and weights w_1,...,w_n. Subclasses compute the
+    nodes and weights in `compute_nodes_and_weights`.
+    """
+
+    def __init__(self,
                  number_nodes: int) -> None:
-        
-        r""" Initialization of nodes and weights for a 
+
+        r""" Initialization of nodes and weights for a
         quadrature rule with ``number_nodes``
         nodes and weights.
-        
+
         Args:
-            number_nodes (int): Number of nodes and weights of
-            device (str): Device where tensors are stored
+            number_nodes (int): Number of nodes and weights of the
+                quadrature rule.
         """
 
         self._number_nodes = number_nodes

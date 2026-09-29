@@ -7,8 +7,22 @@ from .quadrature import Quadrature
 
 class GaussLobatto(Quadrature):
 
-    def __init__(self, 
+    r""" The Gauss-Lobatto quadrature rule on [-1,1] with n nodes, which
+    include the end points -1 and 1. It is exact for polynomials of degree
+    2n-3.
+    """
+
+    def __init__(self,
                  number_nodes: int) -> None:
+
+        r""" Initialization of the nodes and weights of the Gauss-Lobatto
+        quadrature rule with ``number_nodes`` nodes and weights.
+
+        Args:
+            number_nodes (int): Number of nodes and weights n of the
+                Gauss-Lobatto quadrature rule; must be at least 2.
+        """
+
         super().__init__(number_nodes)
 
 
