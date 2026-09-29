@@ -14,7 +14,6 @@ class SpatialDiscParameters:
 
     Args:
         disc_type (str): The spatial discretization method: ``"fem"`` or ``"spectral"``.
-        eps_a (float): Perturbation parameter for the operator L.
         N (int | None): FEM only. Number of spatial subintervals. Defaults to ``None``.
         k (int | None): FEM only. Polynomial degree of the P_k-FEM, i.e. the
             number of integrated Legendre polynomials used is ``k-1``;
@@ -33,7 +32,6 @@ class SpatialDiscParameters:
     """
 
     disc_type: str
-    eps_a: float
     N: int | None = None
     k: int | None = None
     Delta: ndarray | None = None

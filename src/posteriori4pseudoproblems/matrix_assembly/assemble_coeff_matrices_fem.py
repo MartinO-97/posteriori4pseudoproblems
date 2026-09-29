@@ -12,11 +12,11 @@ from ..legendre_galerkin import PkLegendreFEM
 def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
                                    spatial : SpatialDiscParameters,
                                    quadrature : Quadrature,
-                                   ref_functions : PkLegendreFEM) -> tuple[csr_array, csr_array]:
+                                   ref_functions : PkLegendreFEM) -> tuple[csr_array, csr_array, csr_array]:
 
     r"""
-    This functions assembles the matrices, associated with the operators Id u, -\Delta u, au,
-    where a :[a,b] \to \RR and \Delta is the Laplacian, for a FEM-Galerkin method.
+    This functions assembles the matrices, associated with the operators Id u, -\Delta u, au, cu,
+    where a, c :[a,b] \to \RR and \Delta is the Laplacian, for a FEM-Galerkin method.
 
     As shape functionswe use
 
@@ -37,9 +37,9 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
     - k(\phi_{ik}, \ph_{ij}), j,k=1,...,r    (referred to as '*')
 
     Args:
-        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the function a.
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the functions a and c.
         spatial (SpatialDiscParameters): Spatial discretization parameters;
-            provides the perturbation parameter `eps_a`, the number of
+            provides the number of
             spatial subintervals `N`, the polynomial degree `k` of the
             P_k-FEM (k=1 corresponds to a P_1-FEM), the spatial mesh
             `Delta` and the spatial step size `h`.
@@ -50,9 +50,10 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
             nodes.
 
     Returns:
-        tuple[csr_array, csr_array]: Tuple, consisting of
+        tuple[csr_array, csr_array, csr_array]: Tuple, consisting of
             - **csr_array**: Mass matrix.
             - **csr_array**: Matrix subjected to the operator L.
+            - **csr_array**: Matrix subjected to the operator M.
     """
 
     def build_block(data : ndarray, rows : ndarray, cols : ndarray, shape : Tuple[int, int]) -> csr_array:
@@ -77,7 +78,6 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
 
     N = spatial.N
     k = spatial.k
-    eps_a = spatial.eps_a
     Delta = spatial.Delta
     h = spatial.h
 
@@ -90,6 +90,7 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
     psi_l_v, psi_r_v, le_n_g, _ = ref_functions.evaluated_reference_functions
 
     a_v = pde.func_a(int_mapp(x, np.array([-1,1]), np.array([Delta[:-1], Delta[1:]]).T))    # the function a evaluated at x
+    c_v = pde.func_c(int_mapp(x, np.array([-1,1]), np.array([Delta[:-1], Delta[1:]]).T))    # the function c evaluated at x
 
     # shape of all matrices
     shape_matrices = ((r+1)*N-1, (r+1)*N-1)
@@ -118,6 +119,10 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
     data_x_diags = h[:-1]/2 * np.dot(a_v[:-1] * psi_r_v**2, w) + h[1:]/2 * np.dot(a_v[1:] * psi_l_v**2, w)
     reaction_a_x_diags = build_block(data_x_diags, rows_diag, cols_diag, shape_matrices)
 
+    # reaction_c -> subjected to cu
+    data_x_diags = h[:-1]/2 * np.dot(c_v[:-1] * psi_r_v**2, w) + h[1:]/2 * np.dot(c_v[1:] * psi_l_v**2, w)
+    reaction_c_x_diags = build_block(data_x_diags, rows_diag, cols_diag, shape_matrices)
+
     # off-diagonals
     # mass
     data_x_off_diags = h[1:-1]/6
@@ -134,10 +139,16 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
     reaction_a_x_off_diags_above = build_block(data_x_off_diags, rows_off_above, cols_off_above, shape_matrices)
     reaction_a_x_off_diags_under = build_block(data_x_off_diags, rows_off_under, cols_off_under, shape_matrices)
 
+    # reaction_c -> subjected to cu
+    data_x_off_diags = h[1:-1]/2*np.dot(c_v[1:-1]*psi_r_v*psi_l_v, w)
+    reaction_c_x_off_diags_above = build_block(data_x_off_diags, rows_off_above, cols_off_above, shape_matrices)
+    reaction_c_x_off_diags_under = build_block(data_x_off_diags, rows_off_under, cols_off_under, shape_matrices)
+
     # assemble x blocks
     mass_x = mass_x_diags + mass_x_off_diags_above + mass_x_off_diags_under
     stiff_x = stiff_x_diags + stiff_x_off_diags_above + stiff_x_off_diags_under
     reaction_a_x = reaction_a_x_diags + reaction_a_x_off_diags_above + reaction_a_x_off_diags_under
+    reaction_c_x = reaction_c_x_diags + reaction_c_x_off_diags_above + reaction_c_x_off_diags_under
 
     # ----------------------------------------------------------------------------------------------------
     # o BLOCKS
@@ -185,6 +196,11 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         reaction_a_o_r = build_block(data_o_ru, rows_r, cols_r, shape_matrices)
         reaction_a_o_u = build_block(data_o_ru, rows_u, cols_u, shape_matrices)
 
+        # reaction_c
+        data_o_ru = np.repeat(h[:-1]/2, r) * np.dot(np.tile(c_v[:-1, None, :], (1,r,1)) * psi_r_v * le_n_g, w).flatten()
+        reaction_c_o_r = build_block(data_o_ru, rows_r, cols_r, shape_matrices)
+        reaction_c_o_u = build_block(data_o_ru, rows_u, cols_u, shape_matrices)
+
         # l and a
         # mass
         data_o_la = (np.tile(h[1:, None]/2, (1,r)) * np.dot(psi_l_v * le_n_g, w)).flatten()
@@ -196,9 +212,15 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         reaction_a_o_l = build_block(data_o_la, rows_l, cols_l, shape_matrices)
         reaction_a_o_a = build_block(data_o_la, rows_a, cols_a, shape_matrices)
 
+        # reaction_c
+        data_o_la = np.repeat(h[1:]/2, r) * np.dot(np.tile(c_v[1:, None, :], (1,r,1)) * psi_l_v * le_n_g, w).flatten()
+        reaction_c_o_l = build_block(data_o_la, rows_l, cols_l, shape_matrices)
+        reaction_c_o_a = build_block(data_o_la, rows_a, cols_a, shape_matrices)
+
         # assemble o blocks
         mass_o = mass_o_r + mass_o_u + mass_o_l + mass_o_a
         reaction_a_o = reaction_a_o_r + reaction_a_o_u + reaction_a_o_l + reaction_a_o_a
+        reaction_c_o = reaction_c_o_r + reaction_c_o_u + reaction_c_o_l + reaction_c_o_a
 
 
     # ----------------------------------------------------------------------------------------------------
@@ -223,6 +245,10 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         data_star = (h[:,None, None]/2*np.dot(a_v[:, None, :]*le_n_g, (w*le_n_g).T)).flatten()   # type: ignore
         reaction_a_star = build_block(data_star, rows_star, cols_star, shape_matrices)
 
+        # reaction_c
+        data_star = (h[:,None, None]/2*np.dot(c_v[:, None, :]*le_n_g, (w*le_n_g).T)).flatten()   # type: ignore
+        reaction_c_star = build_block(data_star, rows_star, cols_star, shape_matrices)
+
         # row and column indices for the stiffness matrix
         """Due to the orthogonality property of the Legendre polynomials, only the diagonal
         * entries are non zero"""
@@ -233,19 +259,22 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         stiff_star = build_block(data_star, rows_star, cols_star, shape_matrices)
 
     # ----------------------------------------------------------------------------------------------------
-    # ASSEMBLE mass, stiff and reaction_a
+    # ASSEMBLE mass, stiff, reaction_a and reaction_c
     # ----------------------------------------------------------------------------------------------------
 
     if r==0:
         mass = mass_x
         stiff = stiff_x
         reaction_a = reaction_a_x
+        reaction_c = reaction_c_x
     else:
         mass = mass_x + mass_o + mass_star
         stiff = stiff_x + stiff_star
         reaction_a = reaction_a_x + reaction_a_o + reaction_a_star
+        reaction_c = reaction_c_x + reaction_c_o + reaction_c_star
 
-    # The matrix, subjected to the operator L
-    matrix_L = eps_a * stiff + reaction_a
+    # The matrices, subjected to the operators L and M
+    matrix_L = stiff + reaction_a
+    matrix_M = stiff + reaction_c
 
-    return mass, matrix_L
+    return mass, matrix_L, matrix_M

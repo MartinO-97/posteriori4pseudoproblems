@@ -6,7 +6,8 @@ from ..discretization_dataclasses import SpatialDiscParameters
 def slice_coefficient_matrices(spatial: SpatialDiscParameters,
                                spatial_ref: SpatialDiscParameters,
                                mass: csr_array,
-                               matrix_L: csr_array) -> tuple[csr_array, csr_array]:
+                               matrix_L: csr_array,
+                               matrix_M: csr_array) -> tuple[csr_array, csr_array, csr_array]:
 
     r"""
     Slicing of given coefficient matrices for one dimenisonal problems.
@@ -27,11 +28,14 @@ def slice_coefficient_matrices(spatial: SpatialDiscParameters,
         mass (csr_array): Mass matrix, assembled for `spatial_ref`.
         matrix_L (csr_array): Matrix subjected to the operator L, assembled
             for `spatial_ref`.
+        matrix_M (csr_array): Matrix subjected to the operator M, assembled
+            for `spatial_ref`.
 
     Returns:
-        tuple[csr_array, csr_array]: Tuple, consisting of
+        tuple[csr_array, csr_array, csr_array]: Tuple, consisting of
             - **csr_array**: Mass matrix.
             - **csr_array**: Matrix subjected to the operator L.
+            - **csr_array**: Matrix subjected to the operator M.
     """
 
     N = spatial.N
@@ -61,5 +65,6 @@ def slice_coefficient_matrices(spatial: SpatialDiscParameters,
     # SLICING THE MATRICES
     mass_sliced = mass[index, :].tocsc()[:, index].tocsr()
     matrix_L_sliced = matrix_L[index, :].tocsc()[:, index].tocsr()
+    matrix_M_sliced = matrix_M[index, :].tocsc()[:, index].tocsr()
 
-    return mass_sliced, matrix_L_sliced
+    return mass_sliced, matrix_L_sliced, matrix_M_sliced
