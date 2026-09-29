@@ -22,11 +22,11 @@ error estimator, with respect to the L^2 or the H^1 norm, of a
 BDF-2-in-time, P_k-FEM-in-space discretization of the pseudo-parabolic
 problem
 
-    -u_{xxt} + (5x+6) u_t - u_{xx} - e^{-x} u = e^{-4t} + \cos(\pi(x+t)^2)   on (-1,1) x (0,1],
+    -u_{xxt} + (5x+6) u_t - u_{xx} - e^{-x} u = e^{2t} + \cos(\pi(x+t)^2)   on (-1,1) x (0,2],
 
 i.e. L u_t + M u = F with Lu = -u'' + au, Mu = -u'' + cu, a(x) = 5x+6 and
 c(x) = -e^{-x}, initial condition u_0(x) = \sin(\pi x) and homogeneous
-Dirichlet boundary conditions, for M = N = 2^p, p = 3,...,13.
+Dirichlet boundary conditions, for M = N = 2^p, p = 6,...,12.
 
 Since the exact solution is unknown, the error of u^M_h is measured against
 a reference solution at T, computed by a dG(2)-in-time, spectral-Galerkin-
@@ -45,8 +45,8 @@ is exact for polynomials of degree 5.
 """
 
 SPATIAL_INTERVAL = (-1.0, 1.0)
-T_FINAL = 1.0
-P_VALUES = range(3, 14)
+T_FINAL = 2.0
+P_VALUES = range(6, 13)
 DIM_V = 30
 N_QUAD_SPECTRAL = 32
 N_QUAD_FEM = 4
@@ -59,19 +59,27 @@ K_VALUES = {"l2": 1, "h1": 2}
 def source(xt_points: np.ndarray) -> np.ndarray:
     x = xt_points[:, 0]
     t = xt_points[:, -1]
-    return np.exp(-4*t) + np.cos(np.pi*(x+t)**2)
+    return np.exp(2*t) + np.cos(np.pi*(x+t)**2)
+
+
+def initial_condition(x: np.ndarray) -> np.ndarray:
+    return np.sin(np.pi*x)
+
+
+def derivative_initial_condition(x: np.ndarray) -> np.ndarray:
+    return np.pi*np.cos(np.pi*x)
 
 
 def build_pde() -> PseudoParabolicPDE:
     pde = PseudoParabolicPDE(
         F=source,
-        u0=lambda x: np.sin(np.pi*x),
+        u0=initial_condition,
         Psi=lambda xt: np.zeros(xt.shape[0]),
         a=lambda x: 5*x + 6,
         c=lambda x: -np.exp(-x),
         T=T_FINAL,
         spatial_interval=SPATIAL_INTERVAL,
-        der_u0=lambda x: np.pi*np.cos(np.pi*x),
+        der_u0=derivative_initial_condition,
     )
     # C_a, c_a, C_c, c_c, M_2_star, omega_2_star, C_I, L_inverse are needed by the estimator.
     pde.compute_generic_constants()
@@ -110,8 +118,8 @@ def _initial_value(pde: PseudoParabolicPDE,
     L^2 estimator, the L^2 projection of u_0 for the H^1 estimator. """
 
     if norm_used == "l2":
-        return elliptic_projection_fem(pde.func_u0, pde.func_der_u0, pde, spatial_disc_data, quadrature,
-                                       ref_functions, matrix_L)
+        return elliptic_projection_fem(initial_condition, derivative_initial_condition, pde, spatial_disc_data,
+                                       quadrature, ref_functions, matrix_L)
 
     return project_onto_pk_basis(pde.func_u0, spatial_disc_data, quadrature, ref_functions, mass)
 
@@ -168,6 +176,7 @@ def run_bdf2_fem(pde: PseudoParabolicPDE, norm_used: str, M: int, coeffs_ref: np
 
     evaluation.update_eta_init(pde, spatial, quadrature, ref_functions, fem_params)
 
+    sol_vector = u_0
     for j in range(1, M + 1):
 
         # u^1_h, v^1_h by the backward Euler method; u^j_h, v^j_h, j>1, by the BDF-2 method
