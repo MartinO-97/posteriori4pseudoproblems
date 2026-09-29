@@ -2,7 +2,9 @@
 A Posteriori Error Bounds for the BDF-2 Method Applied to Pseudo-Parabolic Partial Differential Equations
 
 This repository contains the code used to compute the numerical results of [1]. Its
-purpose is to make these results reproducible.
+purpose is to make these results reproducible. The a posteriori error bounds of [1] hold
+for time discretizations of second order in general; the numerical experiments, and thus
+this code, use the BDF-2 method.
 
 ## The numerical example
 
