@@ -22,8 +22,7 @@ def compute_max_norm_spectral(sol_vector: ndarray,
 
     Args:
         sol_vector (ndarray): Coefficients of the spectral Galerkin
-            solution, as e.g. returned by `backward_euler_spectral`,
-            `bdf_spectral`, `dg_two_spectral` or `dg_three_spectral`.
+            solution, as e.g. returned by `dg_two_spectral`.
         spatial_disc_data (SpatialDiscParameters): Spatial discretization
             parameters; provides `points_per_interval`, here read as the
             total number of (equidistant) points the solution is

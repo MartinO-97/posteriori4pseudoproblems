@@ -19,8 +19,7 @@ def evaluate_spectral_solution(coeffs : ndarray,
 
     Args:
         coeffs (ndarray): Coefficients of the spectral Galerkin solution,
-            e.g. the `sol_vector` returned by `backward_euler_spectral`,
-            `dg_two_spectral` or `dg_three_spectral`.
+            e.g. the `sol_vector` returned by `dg_two_spectral`.
         x (ndarray): Physical points, lying in the spatial domain of `pde`,
             where the solution shall be evaluated at.
         pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the spatial domain
