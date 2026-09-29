@@ -3,6 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from numpy import ndarray
+from scipy.sparse.linalg import SuperLU
 
 @dataclass
 class TimeSteppingParameters(ABC):
@@ -44,7 +45,7 @@ class TimeSteppingParameters(ABC):
     prev_psi: ndarray | None = field(init=False, default=None, repr=False)
 
     @abstractmethod
-    def get_lu(self, alpha: float):
+    def get_lu(self, alpha: float) -> SuperLU | ndarray:
 
         r""" Returns the object used to solve the coefficient system
         `matrix_L * alpha + matrix_M` against a right-hand side.

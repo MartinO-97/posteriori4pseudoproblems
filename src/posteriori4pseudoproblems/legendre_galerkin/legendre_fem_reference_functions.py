@@ -72,7 +72,7 @@ def legendre(n: int,
         ndarray: The n-th Legendre polynomial P_n evaluated at x.    
     """
 
-    if n < 0 or np.any(x) < -1 or np.any(x) > 1:
+    if n < 0 or np.any(np.abs(x) > 1 + 1e-12):
         raise ValueError('legendre_polynomials: n must be greater than zero and x must be in [-1,1]')
 
     # P_0(x)
@@ -90,8 +90,8 @@ def legendre(n: int,
         for i in range(2,n+1):
             P_b = (2*i-1)/i * x * P_s - (i-1)/i * P_vs
             P_vs = np.copy(P_s)
-            P_s = np.copy(P_b)  
-        legendre_evaluated = P_b      
+            P_s = np.copy(P_b)
+        legendre_evaluated = P_s
     
     return legendre_evaluated
 
@@ -116,7 +116,7 @@ def integrated_legendre(n: int,
         np.ndarray: The n-th integrated Legendre polynomial N_n evaluated at x.    
     """
     
-    if n < 0 or np.any(x) < -1 or np.any(x) > 1:
+    if n < 0 or np.any(np.abs(x) > 1 + 1e-12):
         raise ValueError('legendre_polynomials: n must be greater than zero and x must be in [-1,1]')
 
     # N_0(x)
@@ -163,7 +163,7 @@ def derivative_legendre(n: int,
         ValueError: If n is negative or if x\notin [-1,1].     
     """
 
-    if n < 0 or np.any(x) < -1 or np.any(x) > 1:
+    if n < 0 or np.any(np.abs(x) > 1 + 1e-12):
         raise ValueError('legendre_polynomials: n must be greater than zero and x must be in [-1,1]')
 
     # P'_0(x)
@@ -181,7 +181,7 @@ def derivative_legendre(n: int,
         for i in range(2,n+1):
             der_P_b = (2*i-1)/(i-1) * x * der_P_s - i/(i-1) * der_P_vs
             der_P_vs = np.copy(der_P_s)
-            der_P_s = np.copy(der_P_b)  
-        derivative_legendre_evaluated = der_P_b      
+            der_P_s = np.copy(der_P_b)
+        derivative_legendre_evaluated = der_P_s
     
     return derivative_legendre_evaluated 

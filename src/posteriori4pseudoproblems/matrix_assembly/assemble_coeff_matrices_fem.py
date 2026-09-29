@@ -88,6 +88,8 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
 
     x, w = quadrature.nodes_and_weights
     psi_l_v, psi_r_v, le_n_g, _ = ref_functions.evaluated_reference_functions
+    assert psi_l_v is not None and psi_r_v is not None, \
+        "ref_functions has not been evaluated at the quadrature nodes."
 
     a_v = pde.func_a(int_mapp(x, np.array([-1,1]), np.array([Delta[:-1], Delta[1:]]).T))    # the function a evaluated at x
     c_v = pde.func_c(int_mapp(x, np.array([-1,1]), np.array([Delta[:-1], Delta[1:]]).T))    # the function c evaluated at x
@@ -149,6 +151,12 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
     stiff_x = stiff_x_diags + stiff_x_off_diags_above + stiff_x_off_diags_under
     reaction_a_x = reaction_a_x_diags + reaction_a_x_off_diags_above + reaction_a_x_off_diags_under
     reaction_c_x = reaction_c_x_diags + reaction_c_x_off_diags_above + reaction_c_x_off_diags_under
+
+    # mass, stiff, reaction_a and reaction_c; the o and * blocks are added below, if r>0
+    mass = mass_x
+    stiff = stiff_x
+    reaction_a = reaction_a_x
+    reaction_c = reaction_c_x
 
     # ----------------------------------------------------------------------------------------------------
     # o BLOCKS
@@ -222,6 +230,10 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         reaction_a_o = reaction_a_o_r + reaction_a_o_u + reaction_a_o_l + reaction_a_o_a
         reaction_c_o = reaction_c_o_r + reaction_c_o_u + reaction_c_o_l + reaction_c_o_a
 
+        mass = mass + mass_o
+        reaction_a = reaction_a + reaction_a_o
+        reaction_c = reaction_c + reaction_c_o
+
 
     # ----------------------------------------------------------------------------------------------------
     # * BLOCKS
@@ -258,20 +270,10 @@ def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
         data_star = np.outer(2/h, 2/(2*np.linspace(1,r,r)+1)).flatten()
         stiff_star = build_block(data_star, rows_star, cols_star, shape_matrices)
 
-    # ----------------------------------------------------------------------------------------------------
-    # ASSEMBLE mass, stiff, reaction_a and reaction_c
-    # ----------------------------------------------------------------------------------------------------
-
-    if r==0:
-        mass = mass_x
-        stiff = stiff_x
-        reaction_a = reaction_a_x
-        reaction_c = reaction_c_x
-    else:
-        mass = mass_x + mass_o + mass_star
-        stiff = stiff_x + stiff_star
-        reaction_a = reaction_a_x + reaction_a_o + reaction_a_star
-        reaction_c = reaction_c_x + reaction_c_o + reaction_c_star
+        mass = mass + mass_star
+        stiff = stiff + stiff_star
+        reaction_a = reaction_a + reaction_a_star
+        reaction_c = reaction_c + reaction_c_star
 
     # The matrices, subjected to the operators L and M
     matrix_L = stiff + reaction_a

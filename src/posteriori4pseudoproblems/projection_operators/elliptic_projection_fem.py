@@ -101,6 +101,6 @@ def elliptic_projection_fem(func_u: Callable[[ndarray], ndarray],
             # (u', \phi'_i)
             result_vector[(r+1)*l+j] += np.dot(le_p_g[j] * der_u_value, w)
 
-    sol_vector[1:-1] = spsolve(matrix_L, result_vector)
+    sol_vector[1:-1] = np.asarray(spsolve(matrix_L, result_vector))
 
     return sol_vector

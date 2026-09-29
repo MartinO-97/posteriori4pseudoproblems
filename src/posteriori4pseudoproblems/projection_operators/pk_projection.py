@@ -76,7 +76,7 @@ def project_onto_pk_basis(func: Callable[[ndarray], ndarray],
         for mu in range(0, r):
             rhs[(r + 1) * l + mu] = h / 2 * np.dot(f_v * le_n_g[mu], w)
 
-    dof = spsolve(mass, rhs)
+    dof = np.asarray(spsolve(mass, rhs))
 
     sol_vector = np.zeros((r + 1) * N + 1)
     sol_vector[1:-1] = dof

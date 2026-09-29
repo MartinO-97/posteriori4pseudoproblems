@@ -36,6 +36,9 @@ class GaussLobatto(Quadrature):
 
         stop = 0
 
+        # P_{n-1}(x_old), overwritten in every Newton step
+        P_s = np.copy(x)
+
         # Newton step
         while lg.vector_norm(x-x_old,ord=np.inf) > 10**(-13):
             
