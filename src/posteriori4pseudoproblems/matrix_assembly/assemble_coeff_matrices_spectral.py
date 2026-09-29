@@ -3,12 +3,12 @@ import numpy as np
 from typing import Tuple
 from numpy import ndarray
 from ..interval_transformation import interval_transformation as interval_mapp
-from ..parabolicPDEclass.parabolic_pde import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..discretization_dataclasses import SpatialDiscParameters
 from ..quadrature import Quadrature
 from ..legendre_galerkin import SpectralLegendre
 
-def assemble_coeff_matrices_spectral(pde : ParabolicPDE,
+def assemble_coeff_matrices_spectral(pde : PseudoParabolicPDE,
                                      spatial : SpatialDiscParameters,
                                      quadrature : Quadrature,
                                      ref_functions : SpectralLegendre) -> Tuple[ndarray, ndarray]:
@@ -22,7 +22,7 @@ def assemble_coeff_matrices_spectral(pde : ParabolicPDE,
     We use Gauss-Lobatto (GL) as quadrature formula.
 
     Args:
-        pde (ParabolicPDE): The parabolic PDE, providing the spatial domain
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the spatial domain
             [a,b] and the function a.
         spatial (SpatialDiscParameters): Spatial discretization parameters;
             provides the dimension `dim_V` of the ansatz space and the

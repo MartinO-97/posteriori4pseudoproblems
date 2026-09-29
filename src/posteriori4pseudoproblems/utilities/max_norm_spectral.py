@@ -4,13 +4,13 @@ import numpy as np
 from numpy import ndarray
 
 from ..discretization_dataclasses import SpatialDiscParameters
-from ..parabolicPDEclass import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..legendre_galerkin import evaluate_spectral_solution
 
 
 def compute_max_norm_spectral(sol_vector: ndarray,
                               spatial_disc_data: SpatialDiscParameters,
-                              pde: ParabolicPDE,
+                              pde: PseudoParabolicPDE,
                               func: Callable[[ndarray], ndarray] | None = None) -> float:
 
     r""" Maximum-norm of a spectral Galerkin solution, or of its error
@@ -28,7 +28,7 @@ def compute_max_norm_spectral(sol_vector: ndarray,
             parameters; provides `points_per_interval`, here read as the
             total number of (equidistant) points the solution is
             evaluated at.
-        pde (ParabolicPDE): The parabolic PDE, providing the spatial
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the spatial
             domain `spatial_interval` that `evaluate_spectral_solution`
             needs to map physical points onto the reference interval.
         func (Callable[[ndarray], ndarray] | None): If given, evaluated at

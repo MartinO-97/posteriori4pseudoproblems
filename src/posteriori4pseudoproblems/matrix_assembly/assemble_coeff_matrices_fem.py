@@ -4,12 +4,12 @@ from typing import Tuple
 from numpy import ndarray
 from scipy.sparse import csr_array, coo_array
 from ..interval_transformation import interval_transformation as int_mapp
-from ..parabolicPDEclass.parabolic_pde import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..discretization_dataclasses import SpatialDiscParameters
 from ..quadrature import Quadrature
 from ..legendre_galerkin import PkLegendreFEM
 
-def assemble_coeff_matrices_fem_1d(pde : ParabolicPDE,
+def assemble_coeff_matrices_fem_1d(pde : PseudoParabolicPDE,
                                    spatial : SpatialDiscParameters,
                                    quadrature : Quadrature,
                                    ref_functions : PkLegendreFEM) -> tuple[csr_array, csr_array]:
@@ -37,7 +37,7 @@ def assemble_coeff_matrices_fem_1d(pde : ParabolicPDE,
     - k(\phi_{ik}, \ph_{ij}), j,k=1,...,r    (referred to as '*')
 
     Args:
-        pde (ParabolicPDE): The parabolic PDE, providing the function a.
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the function a.
         spatial (SpatialDiscParameters): Spatial discretization parameters;
             provides the perturbation parameter `eps_a`, the number of
             spatial subintervals `N`, the polynomial degree `k` of the

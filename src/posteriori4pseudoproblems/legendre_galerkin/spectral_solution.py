@@ -2,12 +2,12 @@ import numpy as np
 
 from numpy import ndarray
 from ..interval_transformation import interval_transformation as int_mapp
-from ..parabolicPDEclass.parabolic_pde import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from .legendre_fem_reference_functions import integrated_legendre
 
 def evaluate_spectral_solution(coeffs : ndarray,
                                x : ndarray,
-                               pde : ParabolicPDE) -> ndarray:
+                               pde : PseudoParabolicPDE) -> ndarray:
 
     r""" Evaluates a spectral Galerkin solution
 
@@ -23,7 +23,7 @@ def evaluate_spectral_solution(coeffs : ndarray,
             `dg_two_spectral` or `dg_three_spectral`.
         x (ndarray): Physical points, lying in the spatial domain of `pde`,
             where the solution shall be evaluated at.
-        pde (ParabolicPDE): The parabolic PDE, providing the spatial domain
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the spatial domain
             [a,b].
 
     Returns:

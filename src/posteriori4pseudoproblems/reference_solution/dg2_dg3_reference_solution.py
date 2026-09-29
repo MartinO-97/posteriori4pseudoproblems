@@ -1,7 +1,7 @@
 import numpy as np
 
 from numpy import ndarray
-from ..parabolicPDEclass import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..quadrature import Quadrature
 from ..legendre_galerkin import SpectralLegendre
 from ..discretization_dataclasses import TemporalDiscParameters
@@ -11,7 +11,7 @@ from ..time_discretization_methods import SpectralTimeSteppingParameters, dg_two
 _M_REF = {"dg2": 512, "dg3": 128}
 
 
-def compute_reference_solution(pde: ParabolicPDE,
+def compute_reference_solution(pde: PseudoParabolicPDE,
                                quadrature: Quadrature,
                                ref_functions: SpectralLegendre,
                                mass: ndarray,
@@ -25,7 +25,7 @@ def compute_reference_solution(pde: ParabolicPDE,
     M_REF = 512 for dG(2), M_REF = 128 for dG(3).
 
     Args:
-        pde (ParabolicPDE): The parabolic PDE, providing the initial
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the initial
             condition u0.
         quadrature (Quadrature): Quadrature rule; provides the nodes and
             weights used for numerical integration.

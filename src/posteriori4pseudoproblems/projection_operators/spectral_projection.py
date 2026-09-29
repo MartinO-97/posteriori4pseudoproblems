@@ -3,12 +3,12 @@ import numpy as np
 from typing import Callable
 from numpy import ndarray
 from ..interval_transformation import interval_transformation as int_mapp
-from ..parabolicPDEclass.parabolic_pde import ParabolicPDE
+from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..quadrature import Quadrature
 from ..legendre_galerkin import SpectralLegendre
 
 def project_onto_spectral_basis(func : Callable[[ndarray], ndarray],
-                                pde : ParabolicPDE,
+                                pde : PseudoParabolicPDE,
                                 quadrature : Quadrature,
                                 ref_functions : SpectralLegendre,
                                 mass : ndarray) -> ndarray:
@@ -21,7 +21,7 @@ def project_onto_spectral_basis(func : Callable[[ndarray], ndarray],
     Args:
         func (Callable[[ndarray], ndarray]): The function to project, e.g.
             the initial condition u_0.
-        pde (ParabolicPDE): The parabolic PDE, providing the spatial domain
+        pde (PseudoParabolicPDE): The pseudo-parabolic PDE, providing the spatial domain
             [a,b].
         quadrature (Quadrature): Quadrature rule; provides the Gauss-Lobatto
             nodes and weights used for numerical integration.
