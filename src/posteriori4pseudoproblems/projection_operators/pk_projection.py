@@ -27,7 +27,7 @@ def project_onto_pk_basis(func: Callable[[ndarray], ndarray],
     [a_0, b_{1,1},...,b_{1,r}, a_1, b_{2,1},...,b_{2,r}, a_2, ..., a_N],
 
     with homogeneous Dirichlet boundary values a_0 = a_N = 0, as expected
-    by `evaluate_pk_solution`.
+    by `evaluate_pk_solution_at_quadrature_nodes`.
 
     Args:
         func (Callable[[ndarray], ndarray]): The function to project, e.g.

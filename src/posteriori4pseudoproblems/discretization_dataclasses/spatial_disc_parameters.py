@@ -24,11 +24,6 @@ class SpatialDiscParameters:
             [x_{i-1},x_i], i=1,...,N. Defaults to ``None``.
         dim_V (int | None): Spectral method only. Dimension of the Ansatz space.
             Defaults to ``None``.
-        points_per_interval (int | None): Number of equidistant points
-            used to evaluate the solution for `compute_max_norm`
-            (FEM: per spatial mesh interval) or `compute_max_norm_spectral`
-            (spectral: in total, across the whole spatial domain, since
-            there is no mesh). Defaults to ``None``.
     """
 
     disc_type: str
@@ -37,4 +32,3 @@ class SpatialDiscParameters:
     Delta: ndarray | None = None
     h: ndarray | None = None
     dim_V: int | None = None
-    points_per_interval: int | None = None
