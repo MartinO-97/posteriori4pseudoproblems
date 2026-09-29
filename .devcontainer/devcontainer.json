@@ -1,0 +1,24 @@
+{
+  	"name": "A Posteriori Bounds for Pseudo-Parabolic Problems Dev Container",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"context": "..",
+		"options": ["-t=posteriori4pseudoproblems:latest"]
+	},
+	"remoteUser": "teli",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/teli/workspace,type=bind,consistency=cached",
+	"workspaceFolder": "/home/teli/workspace",
+	
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"anthropic.claude-code"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python3"
+			}
+
+		}
+	}
+}

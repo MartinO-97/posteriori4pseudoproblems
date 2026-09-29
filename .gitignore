@@ -1,0 +1,79 @@
+####################################
+# LaTeX
+####################################
+
+# Core auxiliary files
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Bibliography
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# Index / glossary
+*.idx
+*.ilg
+*.ind
+*.glg
+*.glo
+*.gls
+
+# Temporary / editor files
+*.lof
+*.lot
+
+# pdf files
+*.pdf
+
+####################################
+# Python
+####################################
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Own files
+test.py
+
+####################################
+# Editors / OS
+####################################
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+####################################
+# Misc
+####################################
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*~
+
+####################################
+# Picures
+####################################
+*.png
