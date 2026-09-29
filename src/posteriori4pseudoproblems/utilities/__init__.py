@@ -1,0 +1,4 @@
+from .divided_differences import compute_divided_differences
+from .modified_horner import use_modified_horner
+from .max_norm_fem import compute_max_norm
+from .max_norm_spectral import compute_max_norm_spectral
