@@ -1,2 +1,3 @@
 from .pk_projection import project_onto_pk_basis
 from .spectral_projection import project_onto_spectral_basis
+from .elliptic_projection_fem import elliptic_projection_fem
