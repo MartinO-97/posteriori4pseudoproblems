@@ -26,7 +26,7 @@ problem
 
 i.e. L u_t + M u = F with Lu = -u'' + au, Mu = -u'' + cu, a(x) = 5x+6 and
 c(x) = -e^{-x}, initial condition u_0(x) = \sin(\pi x) and homogeneous
-Dirichlet boundary conditions, for M = N = 2^p, p = 6,...,12.
+Dirichlet boundary conditions, for M = N = 2^p, p = 6,...,13.
 
 Since the exact solution is unknown, the error of u^M_h is measured against
 a reference solution at T, computed by a dG(2)-in-time, spectral-Galerkin-
@@ -46,7 +46,7 @@ is exact for polynomials of degree 5.
 
 SPATIAL_INTERVAL = (-1.0, 1.0)
 T_FINAL = 2.0
-P_VALUES = range(6, 13)
+P_VALUES = range(6, 14)
 DIM_V = 30
 N_QUAD_SPECTRAL = 32
 N_QUAD_FEM = 4
