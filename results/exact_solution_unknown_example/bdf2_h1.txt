@@ -1,0 +1,39 @@
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$M$ & \(N\) & \(\norm{u(T)-u^M_h}_{1,\Omega}\) & $\mathrm{ord}_N$ & $\eta_{H^1_0}$ & $\mathrm{eff}^{-1}$ \\
+\hline
+64 & 64 & 8.769e-03 & 0.00 & 3.713e-02 & 4.23 \\
+128 & 128 & 2.239e-03 & 1.97 & 9.179e-03 & 4.10 \\
+256 & 256 & 5.660e-04 & 1.98 & 2.281e-03 & 4.03 \\
+512 & 512 & 1.423e-04 & 1.99 & 5.684e-04 & 4.00 \\
+1024 & 1024 & 3.567e-05 & 2.00 & 1.419e-04 & 3.98 \\
+2048 & 2048 & 8.923e-06 & 2.00 & 3.543e-05 & 3.97 \\
+4096 & 4096 & 2.234e-06 & 2.00 & 8.857e-06 & 3.97 \\
+8192 & 8192 & 5.482e-07 & 2.03 & 2.790e-06 & 5.09 \\
+\hline
+\end{tabular}
+\caption{BDF-2, P_2-FEM: results of the H^1 estimator}
+\label{tab:exact-solution-unknown-example-h1}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_R$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\
+\hline
+64 & 64 & 1.633e-05 & 2.384e-02 & 7.654e-04 & 1.070e-02 & 1.804e-03 \\
+128 & 128 & 4.076e-06 & 5.846e-03 & 1.842e-04 & 2.703e-03 & 4.418e-04 \\
+256 & 256 & 1.019e-06 & 1.447e-03 & 4.519e-05 & 6.785e-04 & 1.093e-04 \\
+512 & 512 & 2.546e-07 & 3.598e-04 & 1.119e-05 & 1.699e-04 & 2.718e-05 \\
+1024 & 1024 & 6.366e-08 & 8.972e-05 & 2.784e-06 & 4.252e-05 & 6.778e-06 \\
+2048 & 2048 & 1.592e-08 & 2.240e-05 & 6.943e-07 & 1.063e-05 & 1.692e-06 \\
+4096 & 4096 & 3.979e-09 & 5.597e-06 & 1.734e-07 & 2.660e-06 & 4.228e-07 \\
+8192 & 8192 & 9.947e-10 & 1.399e-06 & 4.334e-08 & 1.242e-06 & 1.057e-07 \\
+\hline
+\end{tabular}
+\caption{BDF-2, P_2-FEM: components of the H^1 estimator}
+\label{tab:exact-solution-unknown-example-h1-components}
+\end{table}

@@ -1,0 +1,39 @@
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$M$ & \(N\) & \(\norm{u(T)-u^M_h}_{0,\Omega}\) & $\mathrm{ord}_N$ & $\eta_{L^2}$ & $\mathrm{eff}^{-1}$ \\
+\hline
+64 & 64 & 4.310e-03 & 0.00 & 5.627e-01 & 130.55 \\
+128 & 128 & 1.102e-03 & 1.97 & 1.401e-01 & 127.16 \\
+256 & 256 & 2.787e-04 & 1.98 & 3.496e-02 & 125.45 \\
+512 & 512 & 7.008e-05 & 1.99 & 8.731e-03 & 124.59 \\
+1024 & 1024 & 1.757e-05 & 2.00 & 2.182e-03 & 124.15 \\
+2048 & 2048 & 4.396e-06 & 2.00 & 5.452e-04 & 124.01 \\
+4096 & 4096 & 1.104e-06 & 1.99 & 1.363e-04 & 123.48 \\
+8192 & 8192 & 2.393e-07 & 2.21 & 3.366e-05 & 140.65 \\
+\hline
+\end{tabular}
+\caption{BDF-2, P_1-FEM: results of the L^2 estimator}
+\label{tab:exact-solution-unknown-example-l2}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_R$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\
+\hline
+64 & 64 & 2.398e-01 & 2.384e-02 & 1.615e-01 & 1.177e-01 & 1.984e-02 \\
+128 & 128 & 5.997e-02 & 5.846e-03 & 3.975e-02 & 2.973e-02 & 4.860e-03 \\
+256 & 256 & 1.499e-02 & 1.447e-03 & 9.859e-03 & 7.463e-03 & 1.202e-03 \\
+512 & 512 & 3.748e-03 & 3.598e-04 & 2.455e-03 & 1.869e-03 & 2.990e-04 \\
+1024 & 1024 & 9.370e-04 & 8.972e-05 & 6.126e-04 & 4.677e-04 & 7.455e-05 \\
+2048 & 2048 & 2.342e-04 & 2.240e-05 & 1.530e-04 & 1.169e-04 & 1.861e-05 \\
+4096 & 4096 & 5.856e-05 & 5.597e-06 & 3.823e-05 & 2.922e-05 & 4.650e-06 \\
+8192 & 8192 & 1.464e-05 & 1.399e-06 & 9.556e-06 & 6.903e-06 & 1.162e-06 \\
+\hline
+\end{tabular}
+\caption{BDF-2, P_1-FEM: components of the L^2 estimator}
+\label{tab:exact-solution-unknown-example-l2-components}
+\end{table}
