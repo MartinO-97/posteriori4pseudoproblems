@@ -7,7 +7,7 @@ from ._eta_init import _compute_eta_init
 from ._eta_f import _compute_eta_f
 from ._eta_Psi import _compute_eta_Psi
 from ._eta_delta_psi import _compute_eta_delta_psi
-from ._eta_R import _compute_eta_R
+from ._eta_ell import _compute_eta_ell
 from ._latex_table import _write_to_file
 from ..pseudo_parabolic_pde_class import PseudoParabolicPDE
 from ..discretization_dataclasses import TemporalDiscParameters, SpatialDiscParameters
@@ -39,7 +39,7 @@ class ErrorBoundEvaluationFEM:
     the error ||u(T) - u^M_h|| in the norm `norm_used`, the associated
     convergence order, the value of the a posteriori error estimator
 
-        \eta = \eta_{init} + \eta_f + \eta_R + \eta_\Psi + \eta_{\delta\psi}
+        \eta = \eta_{init} + \eta_f + \eta_\ell + \eta_\Psi + \eta_{\delta\psi}
 
     and its efficiency, and provides `write_to_file` to store them as a
     LaTeX table.
@@ -68,12 +68,12 @@ class ErrorBoundEvaluationFEM:
     history_efficiency: ndarray | None = field(init=False, default=None, repr=False)
     history_eta_init: ndarray | None = field(init=False, default=None, repr=False)
     history_eta_f: ndarray | None = field(init=False, default=None, repr=False)
-    history_eta_R: ndarray | None = field(init=False, default=None, repr=False)
+    history_eta_ell: ndarray | None = field(init=False, default=None, repr=False)
     history_eta_Psi: ndarray | None = field(init=False, default=None, repr=False)
     history_eta_delta_psi: ndarray | None = field(init=False, default=None, repr=False)
     eta_init: float = field(init=False, default=0.0)
     eta_f: float = field(init=False, default=0.0)
-    eta_R: float = field(init=False, default=0.0)
+    eta_ell: float = field(init=False, default=0.0)
     eta_Psi: float = field(init=False, default=0.0)
     eta_delta_psi: float = field(init=False, default=0.0)
 
@@ -128,8 +128,8 @@ class ErrorBoundEvaluationFEM:
                           j: int) -> None:
 
         r""" Adds the contributions of subinterval I_j = [t_{j-1}, t_j] to
-        eta_f, eta_R, eta_Psi and eta_delta_psi to their running totals,
-        computed via `_eta_f._compute_eta_f`, `_eta_R._compute_eta_R`,
+        eta_f, eta_ell, eta_Psi and eta_delta_psi to their running totals,
+        computed via `_eta_f._compute_eta_f`, `_eta_ell._compute_eta_ell`,
         `_eta_Psi._compute_eta_Psi` and `_eta_delta_psi._compute_eta_delta_psi`
         respectively.
 
@@ -162,7 +162,7 @@ class ErrorBoundEvaluationFEM:
 
         self.eta_f += _compute_eta_f(pde, temporal_disc_data, spatial_disc_data, quadrature, j)
 
-        self.eta_R += _compute_eta_R(pde, temporal_disc_data, spatial_disc_data, higher_order_spatial_disc_data,
+        self.eta_ell += _compute_eta_ell(pde, temporal_disc_data, spatial_disc_data, higher_order_spatial_disc_data,
                                      quadrature, ref_functions, higher_order_ref_functions,
                                      fem_time_stepping_parameters, higher_order_fem_time_stepping_parameters,
                                      self.norm_used, j)
@@ -177,7 +177,7 @@ class ErrorBoundEvaluationFEM:
     def update(self, M: int, N: int, error: float) -> None:
 
         r""" Registers the results of a single (M,N) run as a new row: the
-        estimator \eta = eta_init + eta_f + eta_R + eta_Psi + eta_delta_psi
+        estimator \eta = eta_init + eta_f + eta_ell + eta_Psi + eta_delta_psi
         is computed from the current running totals of the components and,
         together with M, N, error, the convergence order (log2(previous
         error / error), 0 for the first row) and the efficiency (error /
@@ -192,7 +192,7 @@ class ErrorBoundEvaluationFEM:
             error (float): The error ||u(T)-u^M_h|| in the norm `norm_used`.
         """
 
-        estimator = self.eta_init + self.eta_f + self.eta_R + self.eta_Psi + self.eta_delta_psi
+        estimator = self.eta_init + self.eta_f + self.eta_ell + self.eta_Psi + self.eta_delta_psi
         order = 0.0 if self.history_error is None else float(np.log2(self.history_error[-1] / error))
 
         self.history_M = _append(self.history_M, M)
@@ -203,13 +203,13 @@ class ErrorBoundEvaluationFEM:
         self.history_efficiency = _append(self.history_efficiency, error / estimator)
         self.history_eta_init = _append(self.history_eta_init, self.eta_init)
         self.history_eta_f = _append(self.history_eta_f, self.eta_f)
-        self.history_eta_R = _append(self.history_eta_R, self.eta_R)
+        self.history_eta_ell = _append(self.history_eta_ell, self.eta_ell)
         self.history_eta_Psi = _append(self.history_eta_Psi, self.eta_Psi)
         self.history_eta_delta_psi = _append(self.history_eta_delta_psi, self.eta_delta_psi)
 
         self.eta_init = 0.0
         self.eta_f = 0.0
-        self.eta_R = 0.0
+        self.eta_ell = 0.0
         self.eta_Psi = 0.0
         self.eta_delta_psi = 0.0
 
@@ -219,7 +219,7 @@ class ErrorBoundEvaluationFEM:
         r""" Writes the results as two LaTeX tables to `path/filename`: M,
         N, the error, its convergence order, the estimator and its
         efficiency, followed by a second table, in the same style, of the
-        estimator's components eta_init, eta_f, eta_R, eta_Psi, eta_delta_psi.
+        estimator's components eta_init, eta_f, eta_ell, eta_Psi, eta_delta_psi.
 
         Args:
             filename (str): Name of the .txt file the tables are written to.
@@ -242,11 +242,11 @@ class ErrorBoundEvaluationFEM:
         assert self.history_M is not None and self.history_N is not None and self.history_error is not None \
             and self.history_estimator is not None and self.history_order is not None \
             and self.history_efficiency is not None and self.history_eta_init is not None \
-            and self.history_eta_f is not None and self.history_eta_R is not None \
+            and self.history_eta_f is not None and self.history_eta_ell is not None \
             and self.history_eta_Psi is not None and self.history_eta_delta_psi is not None, \
             "no results have been registered via update() yet."
 
         _write_to_file(self.norm_used, self.history_M, self.history_N, self.history_error, self.history_order,
                        self.history_estimator, self.history_efficiency, self.history_eta_init,
-                       self.history_eta_f, self.history_eta_R, self.history_eta_Psi, self.history_eta_delta_psi,
+                       self.history_eta_f, self.history_eta_ell, self.history_eta_Psi, self.history_eta_delta_psi,
                        filename, path, caption, label, components_caption, components_label)

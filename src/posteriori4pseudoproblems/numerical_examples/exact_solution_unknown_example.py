@@ -36,7 +36,7 @@ For the L^2 estimator, P_1 elements are employed (k=1), and the Galerkin
 projection of u_0 with respect to L serves as u^0_h; for the H^1 estimator,
 P_2 elements are employed (k=2), and the L^2 projection of u_0 serves as
 u^0_h. The starting value u^1_h is computed by the backward Euler method.
-The higher-order approximations v_h, needed for the eta_R component of the
+The higher-order approximations v_h, needed for the eta_ell component of the
 estimator, are computed the same way, but with P_{k+1} elements; the
 coefficient matrices are assembled for the P_{k+1}-FEM only, and those of
 the P_k-FEM are obtained by slicing them. All spatial integrals are

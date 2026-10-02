@@ -10,7 +10,7 @@ from ..norms import h1_norm_function_fem
 from ._semigroup_bounds import _sigma_j, _mu_j
 
 
-def _compute_eta_R(pde: PseudoParabolicPDE,
+def _compute_eta_ell(pde: PseudoParabolicPDE,
                    temporal_disc_data: TemporalDiscParameters,
                    spatial_disc_data: SpatialDiscParameters,
                    higher_order_spatial_disc_data: SpatialDiscParameters,
@@ -22,7 +22,7 @@ def _compute_eta_R(pde: PseudoParabolicPDE,
                    norm_used: str,
                    j: int) -> float:
 
-    r""" The component \eta_R on the subinterval I_j = [t_{j-1}, t_j]:
+    r""" The component \eta_\ell on the subinterval I_j = [t_{j-1}, t_j]:
 
         \eta^j_R = \sigma_j (\tau_j \eta^j_{ell,1/2} + \tau_j^2/2 \eta^j_{ell,\delta_t})                                  ("h1"),
         \eta^j_R = C_a C_I |||L^{-1}|||_{0,2} \mu_j max_i h_i (\tau_j \eta^j_{ell,1/2} + \tau_j^2/2 \eta^j_{ell,\delta_t})   ("l2"),
@@ -61,7 +61,7 @@ def _compute_eta_R(pde: PseudoParabolicPDE,
         j (int): Index of the time level t_j.
 
     Returns:
-        float: The contribution of I_j to the component eta_R.
+        float: The contribution of I_j to the component eta_ell.
     """
 
     temporal_mesh = temporal_disc_data.temporal_mesh

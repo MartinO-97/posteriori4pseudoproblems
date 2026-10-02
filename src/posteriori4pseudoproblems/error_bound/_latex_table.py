@@ -49,14 +49,14 @@ def _components_table(M: ndarray,
                       N: ndarray,
                       eta_init: ndarray,
                       eta_f: ndarray,
-                      eta_R: ndarray,
+                      eta_ell: ndarray,
                       eta_Psi: ndarray,
                       eta_delta_psi: ndarray,
                       caption: str,
                       label: str) -> list[str]:
 
     r""" The lines of the LaTeX table of M, N and the estimator's
-    components eta_init, eta_f, eta_R, eta_Psi, eta_delta_psi, one row per
+    components eta_init, eta_f, eta_ell, eta_Psi, eta_delta_psi, one row per
     run. """
 
     lines = [
@@ -64,13 +64,13 @@ def _components_table(M: ndarray,
         r"\centering",
         r"\begin{tabular}{|c|c|c|c|c|c|c|}",
         r"\hline",
-        r"$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_R$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\",
+        r"$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_\ell$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\",
         r"\hline",
     ]
 
     for row in range(M.shape[0]):
         cells = [f"{int(M[row])}", f"{int(N[row])}", f"{eta_init[row]:.3e}", f"{eta_f[row]:.3e}",
-                 f"{eta_R[row]:.3e}", f"{eta_Psi[row]:.3e}", f"{eta_delta_psi[row]:.3e}"]
+                 f"{eta_ell[row]:.3e}", f"{eta_Psi[row]:.3e}", f"{eta_delta_psi[row]:.3e}"]
         lines.append(" & ".join(cells) + r" \\")
 
     lines.append(r"\hline")
@@ -91,7 +91,7 @@ def _write_to_file(norm_used: str,
                    efficiency: ndarray,
                    eta_init: ndarray,
                    eta_f: ndarray,
-                   eta_R: ndarray,
+                   eta_ell: ndarray,
                    eta_Psi: ndarray,
                    eta_delta_psi: ndarray,
                    filename: str,
@@ -105,7 +105,7 @@ def _write_to_file(norm_used: str,
     tables to `path/filename`: M, N, the L^2 or H^1 error (`norm_used`),
     its convergence order, the estimator and its efficiency, one row per
     run, followed by a second table, in the same style, of the estimator's
-    components eta_init, eta_f, eta_R, eta_Psi, eta_delta_psi, one row per
+    components eta_init, eta_f, eta_ell, eta_Psi, eta_delta_psi, one row per
     run.
 
     Args:
@@ -119,7 +119,7 @@ def _write_to_file(norm_used: str,
         efficiency (ndarray): `error` / `estimator`, one entry per row.
         eta_init (ndarray): Value of the eta_init component, one entry per row.
         eta_f (ndarray): Value of the eta_f component, one entry per row.
-        eta_R (ndarray): Value of the eta_R component, one entry per row.
+        eta_ell (ndarray): Value of the eta_ell component, one entry per row.
         eta_Psi (ndarray): Value of the eta_Psi component, one entry per row.
         eta_delta_psi (ndarray): Value of the eta_delta_psi component, one
             entry per row.
@@ -148,7 +148,7 @@ def _write_to_file(norm_used: str,
 
     lines = _error_estimator_table(norm_used, M, N, error, order, estimator, efficiency, caption, label)
     lines.append("")
-    lines += _components_table(M, N, eta_init, eta_f, eta_R, eta_Psi, eta_delta_psi,
+    lines += _components_table(M, N, eta_init, eta_f, eta_ell, eta_Psi, eta_delta_psi,
                                components_caption, components_label)
 
     (target_dir / filename).write_text("\n".join(lines) + "\n")

@@ -22,7 +22,7 @@ $M$ & \(N\) & \(\norm{u(T)-u^M_h}_{1,\Omega}\) & $\mathrm{ord}_N$ & $\eta_{H^1_0
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_R$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\
+$M$ & \(N\) & $\eta_{\mathrm{init}}$ & $\eta_f$ & $\eta_\ell$ & $\eta_\Psi$ & $\eta_{\delta\psi}$ \\
 \hline
 64 & 64 & 1.633e-05 & 2.384e-02 & 7.654e-04 & 1.070e-02 & 1.804e-03 \\
 128 & 128 & 4.076e-06 & 5.846e-03 & 1.842e-04 & 2.703e-03 & 4.418e-04 \\
